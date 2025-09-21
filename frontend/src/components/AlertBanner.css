@@ -1,0 +1,33 @@
+.alert-banner {
+  padding: 15px;
+  margin-bottom: 20px;
+  border-radius: 8px;
+  color: white;
+  text-align: left;
+  border: 1px solid;
+}
+
+/* Style par défaut pour les alertes de type "warning" */
+.alert-banner.warning {
+  background-color: #4d3800;
+  border-color: #ffc107;
+}
+
+.alert-title {
+  margin-top: 0;
+  font-size: 1.2rem;
+  color: #ffc107; /* Couleur jaune/orange pour le titre */
+}
+
+.alert-message {
+  margin-bottom: 0;
+}
+/* Style pour les alertes de type "critical" */
+.alert-banner.critical {
+  background-color: #4a1c1c;
+  border-color: #f08080;
+}
+
+.alert-banner.critical .alert-title {
+  color: #f08080; /* Couleur rouge pour le titre */
+}

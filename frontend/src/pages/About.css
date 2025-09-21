@@ -1,0 +1,37 @@
+.about-page {
+  padding: 20px;
+  text-align: left;
+  max-width: 800px;
+  margin: 0 auto;
+  color: #ccc;
+}
+
+.about-page h1, .about-page h2 {
+  color: white;
+  border-bottom: 2px solid #61dafb;
+  padding-bottom: 10px;
+}
+
+.about-section {
+  margin-bottom: 30px;
+}
+
+.about-section p, .about-section li {
+  line-height: 1.6;
+  font-size: 1.1rem;
+}
+
+.about-section strong {
+  color: #61dafb;
+}
+
+.about-section dt {
+  font-weight: bold;
+  color: white;
+  margin-top: 15px;
+}
+
+.about-section dd {
+  margin-left: 20px;
+  margin-bottom: 10px;
+}
