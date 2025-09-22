@@ -1,7 +1,10 @@
-from fastapi import FastAPI, Depends, HTTPException
+from fastapi import FastAPI, Depends, HTTPException, BackgroundTasks
 from sqlalchemy.orm import Session
 from fastapi.middleware.cors import CORSMiddleware
 from typing import List
+
+# On importe notre script de récupération de données
+from scripts import fetch_data
 
 from . import models, schemas, crud, alerts
 from .database import engine, SessionLocal
@@ -10,9 +13,6 @@ models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI(title="Shadow USDHKD API")
 
-# ======================= CORRECTION CORS INFAILLIBLE =======================
-# On autorise toutes les origines avec le "wildcard" (étoile).
-# C'est la méthode la plus simple et la plus fiable pour résoudre les problèmes de CORS.
 origins = ["*"]
 
 app.add_middleware(
@@ -22,7 +22,6 @@ app.add_middleware(
     allow_methods=["GET"],
     allow_headers=["*"],
 )
-# =========================================================================
 
 def get_db():
     db = SessionLocal()
@@ -30,8 +29,27 @@ def get_db():
         yield db
     finally:
         db.close()
+        
+# ===================== NOUVEL ENDPOINT POUR LE CRON JOB =====================
+def run_fetch_script():
+    """Fonction wrapper pour appeler toutes les fonctions de fetch."""
+    print("Déclenchement du script de récupération des données en arrière-plan...")
+    fetch_data.fetch_and_store_rate()
+    fetch_data.fetch_and_store_aggregate_balance()
+    fetch_data.fetch_and_store_hibor_rate()
+    print("Script de récupération des données terminé.")
 
-# ... Le reste du fichier ne change pas ...
+@app.get("/api/trigger-fetch")
+def trigger_fetch(background_tasks: BackgroundTasks):
+    """
+    Cet endpoint lance le script de récupération des données en tâche de fond.
+    C'est cette URL que notre service de cron externe appellera.
+    """
+    background_tasks.add_task(run_fetch_script)
+    return {"message": "La récupération des données a été lancée en arrière-plan."}
+# =========================================================================
+
+# ... Le reste des endpoints ne change pas ...
 @app.get("/api/alerts/status")
 def get_alert_status(db: Session = Depends(get_db)):
     status = alerts.check_trading_conditions(db)
