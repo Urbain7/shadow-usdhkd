@@ -3,7 +3,6 @@ from sqlalchemy.orm import Session
 from fastapi.middleware.cors import CORSMiddleware
 from typing import List
 
-# On importe notre nouveau module d'alertes
 from . import models, schemas, crud, alerts
 from .database import engine, SessionLocal
 
@@ -11,17 +10,19 @@ models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI(title="Shadow USDHKD API")
 
-origins = [
-    "http://localhost:3000",
-]
+# ======================= CORRECTION CORS INFAILLIBLE =======================
+# On autorise toutes les origines avec le "wildcard" (étoile).
+# C'est la méthode la plus simple et la plus fiable pour résoudre les problèmes de CORS.
+origins = ["*"]
 
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
     allow_credentials=True,
-    allow_methods=["*"],
+    allow_methods=["GET"],
     allow_headers=["*"],
 )
+# =========================================================================
 
 def get_db():
     db = SessionLocal()
@@ -30,15 +31,11 @@ def get_db():
     finally:
         db.close()
 
-# ===================== NOUVEL ENDPOINT D'ALERTES =====================
+# ... Le reste du fichier ne change pas ...
 @app.get("/api/alerts/status")
 def get_alert_status(db: Session = Depends(get_db)):
-    """
-    Vérifie les conditions du marché et retourne le statut d'alerte actuel.
-    """
     status = alerts.check_trading_conditions(db)
     return status
-# ======================================================================
 
 @app.get("/api/rates/history", response_model=List[schemas.UsdhkdRate])
 def read_rate_history(db: Session = Depends(get_db)):
