@@ -29,11 +29,11 @@ function Dashboard() {
         setError(null); // On réinitialise les erreurs précédentes
 
        const endpoints = [
-  'https://shadow-usdhkd-api.onrender.com/api/alerts/status',
-  'https://shadow-usdhkd-api.onrender.com/api/rates/latest',
-  'https://shadow-usdhkd-api.onrender.com/api/rates/history',
-  'https://shadow-usdhkd-api.onrender.com/api/aggregate-balance/latest',
-  'https://shadow-usdhkd-api.onrender.com/api/hibor/latest'
+  'https://hadow-usdhkd-api.onrender.com/api/alerts/status',
+  'https://hadow-usdhkd-api.onrender.com/api/rates/latest',
+  'https://hadow-usdhkd-api.onrender.com/api/rates/history',
+  'https://hadow-usdhkd-api.onrender.com/api/aggregate-balance/latest',
+  'https://hadow-usdhkd-api.onrender.com/api/hibor/latest'
 ];
         
         // On transforme chaque endpoint en une promesse de fetch
