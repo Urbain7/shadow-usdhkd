@@ -3,7 +3,6 @@ import RateChart from '../components/RateChart';
 import AlertBanner from '../components/AlertBanner';
 import '../App.css';
 
-// Un petit composant stylisé pour le chargement
 const LoadingSpinner = () => (
   <div className="spinner-container">
     <div className="loading-spinner"></div>
@@ -11,7 +10,6 @@ const LoadingSpinner = () => (
 );
 
 function Dashboard() {
-  // 1. On ajoute les états pour le chargement et les erreurs
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -24,21 +22,23 @@ function Dashboard() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // 2. Juste avant de lancer les requêtes, on s'assure que loading est bien à true
         setLoading(true);
-        setError(null); // On réinitialise les erreurs précédentes
+        setError(null);
 
-       const endpoints = [
-  'https://hadow-usdhkd-api.onrender.com/api/alerts/status',
-  'https://hadow-usdhkd-api.onrender.com/api/rates/latest',
-  'https://hadow-usdhkd-api.onrender.com/api/rates/history',
-  'https://hadow-usdhkd-api.onrender.com/api/aggregate-balance/latest',
-  'https://hadow-usdhkd-api.onrender.com/api/hibor/latest'
-];
+        // ======================= CORRECTION DE L'URL ICI =======================
+        const API_BASE_URL = 'https://hadow-usdhkd-api.onrender.com'; // Utilise "hadow"
+        // =======================================================================
+
+        const endpoints = [
+          `${API_BASE_URL}/api/alerts/status`,
+          `${API_BASE_URL}/api/rates/latest`,
+          `${API_BASE_URL}/api/rates/history`,
+          `${API_BASE_URL}/api/aggregate-balance/latest`,
+          `${API_BASE_URL}/api/hibor/latest`
+        ];
         
-        // On transforme chaque endpoint en une promesse de fetch
         const requests = endpoints.map(url => fetch(url).then(res => {
-          if (!res.ok) { // Si la réponse n'est pas OK (ex: 404, 500)
+          if (!res.ok) {
             throw new Error(`Erreur HTTP ${res.status} pour ${url}`);
           }
           return res.json();
@@ -53,22 +53,19 @@ function Dashboard() {
         setHiborRate(hiborData);
 
       } catch (err) {
-        // 3. Si une erreur se produit, on la stocke dans l'état 'error'
         setError(err.message || "Une erreur est survenue lors de la récupération des données.");
         console.error("Erreur lors de la récupération des données:", err);
       } finally {
-        // 4. Que la requête réussisse ou échoue, on arrête le chargement
         setLoading(false);
       }
     };
 
-    fetchData(); // On exécute au chargement
+    fetchData();
     const interval = setInterval(fetchData, 60000);
     return () => clearInterval(interval);
   }, []);
 
-  // 5. Affichage conditionnel basé sur les nouveaux états
-  if (loading && !latestRate) { // On affiche le spinner seulement au premier chargement
+  if (loading && !latestRate) {
     return <LoadingSpinner />;
   }
 
@@ -86,7 +83,6 @@ function Dashboard() {
     <div className="dashboard">
       <AlertBanner alertData={alertStatus} />
       <div className="info-cards">
-        {/* Les cartes restent les mêmes */}
         <div className="rate-display card">
           <h2>Dernier Taux USD/HKD</h2>
           {latestRate ? (
