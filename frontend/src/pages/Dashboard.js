@@ -28,13 +28,13 @@ function Dashboard() {
         setLoading(true);
         setError(null); // On réinitialise les erreurs précédentes
 
-        const endpoints = [
-          'http://localhost:8000/api/alerts/status',
-          'http://localhost:8000/api/rates/latest',
-          'http://localhost:8000/api/rates/history',
-          'http://localhost:8000/api/aggregate-balance/latest',
-          'http://localhost:8000/api/hibor/latest'
-        ];
+       const endpoints = [
+  'https://shadow-usdhkd-api.onrender.com/api/alerts/status',
+  'https://shadow-usdhkd-api.onrender.com/api/rates/latest',
+  'https://shadow-usdhkd-api.onrender.com/api/rates/history',
+  'https://shadow-usdhkd-api.onrender.com/api/aggregate-balance/latest',
+  'https://shadow-usdhkd-api.onrender.com/api/hibor/latest'
+];
         
         // On transforme chaque endpoint en une promesse de fetch
         const requests = endpoints.map(url => fetch(url).then(res => {
